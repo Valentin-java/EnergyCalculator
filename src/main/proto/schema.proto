@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.parameters.energy.grpc;
+
+message RequestParamEn {
+
+}
+
+message ResponseParamEn {
+
+}
+
