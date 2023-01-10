@@ -1,10 +1,12 @@
 package com.example.energycalculator.service.impl;
 
+import com.example.energycalculator.mapper.EnergyStatusMapper;
 import com.example.energycalculator.persistance.entity.EnergyEntity;
 import com.example.energycalculator.persistance.entity.TarifEntity;
 import com.example.energycalculator.mapper.ECalcMapper;
 import com.example.energycalculator.rest.model.EnergyCalcRequest;
 import com.example.energycalculator.rest.model.EnergyCalcResponse;
+import com.example.energycalculator.rest.model.EnergyStatusDto;
 import com.example.energycalculator.rest.model.EnergyTarifRequest;
 import com.example.energycalculator.persistance.repository.EnergyRepo;
 import com.example.energycalculator.persistance.repository.TarifRepo;
@@ -12,6 +14,7 @@ import com.example.energycalculator.service.EnergyCalcService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,17 +22,11 @@ import org.springframework.stereotype.Service;
 public class EnergyCalcServiceImpl implements EnergyCalcService {
 
   private final ECalcMapper eCalcMapper;
-
   private final EnergyRepo energyRepo;
-
   private final TarifRepo tarifRepo;
-
   private BigDecimal dayRequestParameters;
-
   private BigDecimal dayPreviousParameters;
-
   private BigDecimal nightRequestParameters;
-
   private BigDecimal nightPreviousParameters;
 
   public EnergyCalcServiceImpl(
@@ -39,6 +36,12 @@ public class EnergyCalcServiceImpl implements EnergyCalcService {
     this.eCalcMapper = eCalcMapper;
     this.energyRepo = energyRepo;
     this.tarifRepo = tarifRepo;
+  }
+
+  @Override
+  public EnergyStatusDto getEnergyStatus() {
+    EnergyStatusMapper mapper = Mappers.getMapper(EnergyStatusMapper.class);
+    return mapper.toDto(energyRepo.findFirstByOrderByDateCreatedDesc());
   }
 
   @Override
